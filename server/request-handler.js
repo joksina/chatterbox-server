@@ -1,31 +1,39 @@
 
 var url = require('url');
-var data = {};
+var fs = require('fs')
+var data = [];
 
 var requestHandler = function(request, response) {
 
   console.log("Serving request type " + request.method + " for url " + request.url);
 
+var headers = defaultCorsHeaders;
 
   var message;
 
-  var statusCode;
+  var statusCode = 200;
   var urlObj = url.parse(request.url, true)
-
-
+  if (urlObj.pathname === '/classes/room1' || urlObj.pathname === '/classes/messages') {
     if(request.method === 'GET') {
-      if(url === '/classes/messages') {
-          statusCode = 200;  
-         message = JSON.parse(JSON.stringify(data))
+        headers['Content-Type'] = "application/json";
+        statusCode = 200;  
+          message = JSON.stringify({results: data});
       }else {
         statusCode = 404;
       }
-    } else if(request.method === "POST") {
+    }
+
+  if (urlObj.pathname === '/classes/room1' ){
+    if(request.method === "POST") {
+        data.push(request._postDATA)
+        headers['Content-Type'] = "application/json";
         statusCode = 201;
         message = JSON.stringify({results: data})
-      }
+        response.writeHead(statusCode, headers);
 
-  var headers = defaultCorsHeaders;
+      }
+    }
+    
 
   headers['Content-Type'] = "text/plain";
 
