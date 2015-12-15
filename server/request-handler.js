@@ -1,6 +1,6 @@
 
 var url = require('url');
-var data = [];
+var data = {};
 
 var requestHandler = function(request, response) {
 
@@ -10,17 +10,20 @@ var requestHandler = function(request, response) {
   var message;
 
   var statusCode;
+  var urlObj = url.parse(request.url, true)
 
 
     if(request.method === 'GET') {
-      statusCode = 200;
-      message = JSON.stringify({results: data})
-    }else {
-      if(request.method === "POST") {
-        statusCode = 201;
-
+      if(url === '/classes/messages') {
+          statusCode = 200;  
+         message = JSON.parse(JSON.stringify(data))
+      }else {
+        statusCode = 404;
       }
-    }
+    } else if(request.method === "POST") {
+        statusCode = 201;
+        message = JSON.stringify({results: data})
+      }
 
   var headers = defaultCorsHeaders;
 
@@ -28,7 +31,7 @@ var requestHandler = function(request, response) {
 
   response.writeHead(statusCode, headers);
 
-  response.end("Hello, World!");
+  response.end(message);
 };
 
 var defaultCorsHeaders = {
@@ -38,4 +41,4 @@ var defaultCorsHeaders = {
   "access-control-max-age": 10 // Seconds.
 };
 
-module.exports = requestHandler;
+module.exports.requestHandler = requestHandler;
