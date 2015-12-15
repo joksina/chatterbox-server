@@ -18,6 +18,8 @@ var headers = defaultCorsHeaders;
         headers['Content-Type'] = "application/json";
         statusCode = 200;  
           message = JSON.stringify({results: data});
+          response.writeHead(statusCode, headers);
+
       }else {
         statusCode = 404;
       }
